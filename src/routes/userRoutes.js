@@ -1,12 +1,10 @@
-const express = require('express');
+import express from 'express';
+import userController from '../controllers/userController.js';
+
 const router = express.Router();
-const userController = require('../controllers/userController');
-const { authenticateToken, authorizeRoles } = require('../middleware/authentication');
 
-// Obtener todos los usuarios (solo admins)
-router.get('/', authenticateToken, authorizeRoles('admin'), userController.getAllUsers);
+router.get('/', userController.getUsers);
+router.post('/', userController.addUser);
+router.delete('/:id', userController.deleteUser);
 
-// Actualizar rol u otro dato del usuario
-router.put('/', authenticateToken, authorizeRoles('admin'), userController.updateUser);
-
-module.exports = router;
+export default router;

@@ -1,15 +1,16 @@
-const express = require('express');
+// your-backend-project/src/routes/productRoutes.js
+// Defines specific routes for the 'producto' entity.
+
+import express from 'express';
+import productController from '../controllers/productController.js'; // Import the product controller
+
 const router = express.Router();
-const productController = require('../controllers/productController');
-const { authenticateToken } = require('../middleware/authentication');
 
-// Obtener todos los productos
-router.get('/', authenticateToken, productController.getAllProducts);
+// Define routes and associate controllers.
+router.get('/', productController.getProducts);               // GET /api/products
+router.post('/', productController.addProduct);               // POST /api/products
+router.get('/categories', productController.getCategoriasProduct); // GET /api/products/categories (for product form)
+router.delete('/:id', productController.deleteProduct);       // DELETE /api/products/:id
 
-// Actualizar stock de un producto
-router.put('/stock', authenticateToken, productController.updateProductStock);
-
-// Crear nuevo producto
-router.post('/', authenticateToken, productController.createProduct);
-
-module.exports = router;
+// Export the router as the default export for ES modules.
+export default router;

@@ -2,9 +2,10 @@
   "name": "coffee-palace-backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -19,8 +20,11 @@
   "homepage": "https://github.com/dianaerazo/Coffee-Palace-Backend#readme",
   "description": "",
   "dependencies": {
+    "@supabase/supabase-js": "^2.50.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "multer": "^2.0.1",
+    "uuid": "^11.1.0"
   }
 }

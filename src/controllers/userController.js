@@ -1,21 +1,35 @@
-const supabase = require('../config/config');
+import userService from '../services/userService.js';
 
-const getAllUsers = async (req, res) => {
-  const { data, error } = await supabase.from('users').select('*');
-  if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+const userController = {
+
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await userService.getAllUsers();
+      res.status(200).json(users); 
+    } catch (error) {
+      next(error); 
+    }
+  },
+
+  addUser: async (req, res, next) => {
+    try {
+      const newUser = await userService.addUser(req.body);
+      res.status(201).json(newUser); // 201 Created
+    } catch (error) {
+      next(error);
+    }
+  },
+
+ 
+  deleteUser: async (req, res, next) => {
+    try {
+      const { id } = req.params; 
+      await userService.deleteUser(parseInt(id));
+      res.status(204).send(); 
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
-// Actualizar rol o estado del usuario
-const updateUser = async (req, res) => {
-  const { id, role } = req.body;
-  const { error } = await supabase.from('users').update({ role }).eq('id', id);
-
-  if (error) return res.status(500).json({ error: error.message });
-  res.json({ message: 'Usuario actualizado' });
-};
-
-module.exports = {
-  getAllUsers,
-  updateUser,
-};
+export default userController;
