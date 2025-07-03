@@ -108,6 +108,29 @@ const authController = {
       next(error);
     }
   },
+
+  /**
+   * Obtiene los datos del perfil de usuario de la tabla 'usuario' por su auth_id.
+   * Ruta: GET /api/auth/profile-by-auth-id?auth_id=...
+   * Espera: auth_id como parámetro de consulta.
+   */
+ getUsuarioProfile: async (req, res, next) => {
+    try {
+      const { correo } = req.query; // <--- CAMBIO AQUÍ: Ahora espera 'correo'
+      if (!correo) {
+        res.status(400);
+        throw new Error('El correo es requerido para obtener el perfil del usuario.'); // <--- Mensaje actualizado
+      }
+      const usuarioProfile = await authService.getUsuarioProfileByEmail(correo); // <--- Llama a la nueva función
+      if (!usuarioProfile) {
+        return res.status(404).json({ message: 'Perfil de usuario no encontrado.' });
+      }
+      res.status(200).json(usuarioProfile); // Devuelve el objeto usuario directamente
+    } catch (error) {
+      next(error);
+    }
+  }
 };
+
 
 export default authController;

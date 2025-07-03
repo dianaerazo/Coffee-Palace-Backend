@@ -13,6 +13,23 @@ const productService = {
     }
     return data;
   },
+getProductById: async (id) => {
+    const { data, error } = await supabase
+      .from('producto')
+      .select('*')
+      .eq('id', id) // <--- Filtra por el ID
+      .single(); // <--- Espera un solo resultado
+
+    if (error) {
+      console.error(`Error in getProductById service for ID ${id}:`, error);
+      // Si el error es 'PGRST116' (No rows found), significa que el producto no existe
+      if (error.code === 'PGRST116') {
+        return null; // Devuelve null si no se encuentra el producto
+      }
+      throw new Error(`Failed to fetch product by ID: ${error.message}`);
+    }
+    return data; // Devuelve el objeto del producto
+  },
 
   
   addProduct: async (productData) => {

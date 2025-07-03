@@ -34,6 +34,42 @@ const orderController = {
       next(error);
     }
   },
+   /**
+     * Handler for POST /api/ordenes (create a new order)
+     * @body {string} userId - ID del usuario
+     * @body {number} totalAmount - Monto total de la orden
+     * @body {Array<{productId: number, quantity: number}>} products - Lista de productos en la orden
+     */
+    createOrder: async (req, res, next) => {
+        try {
+            const { userId, totalAmount, products } = req.body;
+
+            if (!userId || !totalAmount || !products || !Array.isArray(products) || products.length === 0) {
+                res.status(400);
+                throw new Error('Datos de orden incompletos o inválidos.');
+            }
+
+            const newInvoice = await orderService.createOrder(userId, totalAmount, products);
+            res.status(201).json({ message: 'Orden creada exitosamente', invoice: newInvoice });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    /**
+     * Handler for GET /api/ordenes/user/:userId (get orders for a specific user)
+     * @param {string} req.params.userId - ID del usuario
+     */
+    getUserOrders: async (req, res, next) => {
+        try {
+            const { userId } = req.params;
+            const orders = await orderService.getUserOrders(userId);
+            res.status(200).json(orders);
+        } catch (error) {
+            next(error);
+        }
+    },
+
 };
 
 export default orderController;
