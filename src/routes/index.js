@@ -12,8 +12,6 @@ import comentariosRoutes from './comentariosRoutes.js';
 import searchRoutes from './searchRoutes.js'; // This is correct for a default export
 import carritoRoutes from './carritoRoutes.js'; // NUEVO
 
-
-
 const router = express.Router();
 
 router.use('/usuarios', userRoutes);
@@ -25,12 +23,9 @@ router.use('/upload', imageUploadRoutes);
 router.use('/recetas', recetaRoutes); 
 router.use('/orders', orderRoutes); 
 router.use('/auth', authRoutes); 
+router.use('/client', carritoRoutes); 
 router.use('/comentarios', comentariosRoutes); 
 router.use('/search', searchRoutes); // <-- Use the new search routes
 router.use('/carrito', carritoRoutes); // NUEVO
-
-
-
-
 
 export default router;

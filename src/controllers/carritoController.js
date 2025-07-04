@@ -81,7 +81,57 @@ const carritoController = {
         } catch (error) {
             next(error);
         }
-    }
+    },
+
+
+    /**
+     * Crea la orden en PayPal a partir del carrito del usuario.
+     * Body esperado: { userId: number }
+     * Respuesta: 201  { orderId: string }
+     */
+    createOrder: async (req, res, next) => {
+        try {
+            const { userId } = req.body;
+
+            if (!userId || isNaN(parseInt(userId))) {
+                res.status(400);
+                throw new Error('Se requiere un userId numérico válido.');
+            }
+
+            const orderId = await checkoutService.createOrder(parseInt(userId));
+            res.status(201).json({ orderId });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    /**
+     * Captura la orden aprobada, genera la factura y vacía el carrito.
+     * Body esperado: { userId: number, orderId: string }
+     * Respuesta: 200  { facturaId, numeroFactura, paypalCapture }
+     */
+    captureOrder: async (req, res, next) => {
+        try {
+            const { userId, orderId } = req.body;
+
+            if (!userId || isNaN(parseInt(userId))) {
+                res.status(400);
+                throw new Error('Se requiere un userId numérico válido.');
+            }
+            if (!orderId || typeof orderId !== 'string') {
+                res.status(400);
+                throw new Error('orderId es obligatorio y debe ser una cadena.');
+            }
+
+            const result = await checkoutService.captureOrder(
+                parseInt(userId),
+                orderId,
+            );
+            res.status(200).json(result);
+        } catch (error) {
+            next(error);
+        }
+    },
 };
 
 export default carritoController;
