@@ -10,10 +10,11 @@ const router = express.Router();
 router.get('/', recetaController.getAllRecetas); // GET /api/recetas
 router.post('/', recetaController.addReceta);   // POST /api/recetas
 router.delete('/:id', recetaController.deleteReceta); // DELETE /api/recetas/:id
-router.get('/:id', recetaController.getRecetaById); // GET /api/recetas/:id
-
 // Rutas para los datos auxiliares de recetas
 router.get('/ingredientes-disponibles', recetaController.getIngredientesDisponibles); // GET /api/recetas/ingredientes-disponibles
 router.get('/ingredientes-relaciones', recetaController.getAllRecetaIngredienteRelations); // GET /api/recetas/ingredientes-relaciones
+
+
+router.get('/recetaById/:id', recetaController.getRecetaById);
 
 export default router;
