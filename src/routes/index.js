@@ -8,7 +8,7 @@ import imageUploadRoutes from './imageUploadRoutes.js';
 import recetaRoutes from './recetaRoutes.js'; 
 import orderRoutes from './orderRoutes.js'; 
 import authRoutes from './authRoutes.js';
-
+import chekcoutRoutes from './carritoRoute.js'; 
 
 const router = express.Router();
 
@@ -20,7 +20,6 @@ router.use('/upload', imageUploadRoutes);
 router.use('/recetas', recetaRoutes); 
 router.use('/orders', orderRoutes); 
 router.use('/auth', authRoutes); 
-
-
+router.use('/client', chekcoutRoutes); 
 
 export default router;
