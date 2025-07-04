@@ -63,14 +63,13 @@ const recetaService = {
   },
 
   /**
-   * Obtiene todas las recetas, posiblemente con sus ingredientes asociados (si se hace un JOIN en el futuro).
-   * Por ahora, selecciona solo las columnas de la receta.
+   * Obtiene todas las recetas, con sus detalles básicos.
    * @returns {Promise<Array>} Lista de recetas.
    */
   getAllRecetas: async () => {
     const { data, error } = await supabase
       .from('receta')
-      .select('*'); // Selecciona todas las columnas de la receta. Para ingredientes, necesitarías otra query o JOIN.
+      .select('*'); // Selecciona todas las columnas de la receta.
 
     if (error) {
       console.error('Error en getAllRecetas service:', error);
@@ -78,6 +77,59 @@ const recetaService = {
     }
     return data;
   },
+
+  /**
+   * Obtiene una receta por su ID, incluyendo sus ingredientes relacionados.
+   * @param {number} id_Receta - El ID de la receta a buscar.
+   * @returns {Promise<Object|null>} La receta con sus ingredientes, o null si no se encuentra.
+   */
+ getRecetaByIdWithIngredientes: async (id_Receta) => {
+    const { data, error } = await supabase
+      .from('receta')
+      .select(`
+        id,
+        nombre,
+        descripcion,
+        instrucciones,
+        imagen,
+        receta_ingrediente(
+          ingrediente(
+            id,
+            nombre
+          )
+        )
+      `)
+      .eq('id', id_Receta)
+      .single();
+
+    if (error) {
+      console.error(`Error en getRecetaByIdWithIngredientes service para ID ${id_Receta}:`, error);
+      if (error.code === 'PGRST116') {
+          return null; // Retorna null si la receta no existe
+      }
+      throw new Error(`Fallo al obtener la receta y sus ingredientes: ${error.message}`);
+    }
+
+    if (data) {
+        const ingredientesFormateados = data.receta_ingrediente.map(ri => ri.ingrediente);
+
+        // ¡Este es el cambio clave! Estructuramos la respuesta del backend
+        // para que coincida directamente con tu RecetaWithIngredientes del frontend.
+        return {
+            receta: {
+                id: data.id,
+                nombre: data.nombre,
+                descripcion: data.descripcion,
+                instrucciones: data.instrucciones,
+                imagen: data.imagen
+            },
+            ingredientes: ingredientesFormateados
+        };
+    }
+
+    return null;
+  },
+
 
   /**
    * Obtiene todas las relaciones de receta_ingrediente.
@@ -102,10 +154,6 @@ const recetaService = {
    * @returns {Promise<Object>} Mensaje de éxito.
    */
   deleteReceta: async (idReceta) => {
-    // Inicia una transacción si quieres asegurar que ambos borrados ocurran o ninguno.
-    // Supabase no tiene transacciones en tiempo real en JS SDK para Storage, pero para DB sí.
-    // Esto es un borrado en cascada manual.
-
     // Primero, eliminar las relaciones en la tabla pivote
     const { error: deleteRelationsError } = await supabase
       .from('receta_ingrediente')

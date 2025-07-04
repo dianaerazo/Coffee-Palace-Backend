@@ -3,19 +3,18 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // <--- ¡CAMBIO AQUÍ! Usar SERVICE_ROLE_KEY
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY; 
 
-if (!supabaseUrl || !supabaseServiceRoleKey) { // <--- ¡CAMBIO AQUÍ! Validar SERVICE_ROLE_KEY
+if (!supabaseUrl || !supabaseServiceRoleKey) { 
   console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment variables.");
   process.exit(1);
 }
 
-// Inicializa el cliente Supabase con la service_role_key
-const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, { // <--- ¡CAMBIO AQUÍ! Pasar SERVICE_ROLE_KEY
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, { 
   auth: {
-    autoRefreshToken: false, // Opcional, pero recomendado para el cliente de backend
-    persistSession: false,   // Opcional, pero recomendado para el cliente de backend
-    detectSessionInUrl: false // Opcional, pero recomendado para el cliente de backend
+    autoRefreshToken: false, 
+    persistSession: false,   
+    detectSessionInUrl: false 
   }
 });
 

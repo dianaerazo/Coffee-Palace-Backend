@@ -28,6 +28,30 @@ const productController = {
       next(error);
     }
   },
+  getProductById: async (req, res, next) => { // Agrega 'next' para manejo de errores
+    try {
+      const productId = req.params.id;
+      
+      // Valida que el ID sea un número si es necesario
+      if (isNaN(parseInt(productId))) {
+        return res.status(400).json({ message: 'ID de producto inválido.' });
+      }
+
+      // ¡¡¡LLAMA AL SERVICIO REAL!!!
+      const product = await productService.getProductById(parseInt(productId)); 
+
+      if (product) {
+        res.status(200).json(product);
+      } else {
+        // Si el servicio devuelve null, significa que el producto no fue encontrado
+        res.status(404).json({ message: 'Producto no encontrado.' });
+      }
+    } catch (error) {
+      console.error('Error al obtener el producto por ID en el controlador:', error);
+      next(error); // Pasa el error al siguiente middleware de manejo de errores
+    }
+  },
+
 
   getCategoriasProduct: async (req, res, next) => {
     try {

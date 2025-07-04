@@ -30,6 +30,46 @@ const userController = {
       next(error);
     }
   },
+  updateUserImage: async (req, res, next) => {
+    try {
+      const { email } = req.params; // Get email from URL parameters
+      const { imagen } = req.body; // Get the new image URL from the request body
+
+      if (!email || !imagen) {
+        return res.status(400).json({ message: 'User email and image URL are required.' });
+      }
+
+      const updatedUser = await userService.updateUserImageByEmail(email, imagen);
+
+      if (updatedUser) {
+        res.status(200).json({ message: 'Profile image updated successfully.', user: updatedUser });
+      } else {
+        return res.status(404).json({ message: 'User not found or image could not be updated.' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // New method to get a user by email
+  getUsuarioByEmail: async (req, res, next) => {
+    try {
+      const { correo } = req.query; // Expect 'correo' as a query parameter (e.g., /api/usuarios/profile-by-email?correo=test@example.com)
+      if (!correo) {
+        return res.status(400).json({ message: 'The "correo" query parameter is required.' });
+      }
+      const user = await userService.getUsuarioByEmail(correo);
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ message: 'User not found.' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 };
+
+
 
 export default userController;

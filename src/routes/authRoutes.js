@@ -1,4 +1,3 @@
-// your-backend-project/src/routes/authRoutes.js
 import express from 'express';
 import authController from '../controllers/authController.js';
 
@@ -11,5 +10,6 @@ router.post('/reset-password', authController.sendPasswordReset); // Envío de e
 router.post('/signin-google-token', authController.signInWithGoogleToken); // Inicio de sesión con ID Token de Google
 router.delete('/users/:id', authController.deleteUser); // Eliminación de usuario (requiere privilegios de admin)
 router.post('/signout', authController.signOut); // Cierre de sesión
+router.get('/profile-by-email', authController.getUsuarioProfile); // <--- CAMBIO DE RUTA AQUÍ
 
 export default router;
